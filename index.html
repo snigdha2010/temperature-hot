@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url(images/bg-image.jpg) no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-md-6 m-auto py-5">
+            <div class="input-group mb-3">
+                <input id="cityName" type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <div class="input-group-append">
+                    <button onclick={getCity()} type="button" class="btn btn-danger">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="weather-status text-white text-center">
+            <img id="weather-logo" src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
+            <h1 id="city">City</h1>
+            <h3>Temperature <span id="temp">0 </span>&deg;C</h3>
+            <h1 id="type" class="lead">Weather</h1>
+        </div>
+    </div>
+
+    <script>
+        const getCity = (cityName) => {
+            cityName = document.getElementById("cityName").value;
+            fetch(
+                    `http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=c89fcdf93da59dcb45ab29f77844a27b`
+                )
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    let city = data.name
+                    let weather = data.weather[0].main
+                    let temp = data.main.temp
+                    let tempCelcious = Math.round(temp - 273.15)
+                    console.log(tempCelcious)
+                    getWeather(tempCelcious, city, weather)
+
+                })
+
+        }
+
+        function getWeather(temp, city, weather) {
+            const haze = "https://openweathermap.org/img/wn/50d@2x.png"
+            const rain = "https://openweathermap.org/img/wn/10d@2x.png"
+            const clear = "https://openweathermap.org/img/wn/01d@2x.png"
+            const cloud = "https://openweathermap.org/img/wn/03d@2x.png"
+            if (weather == "Haze") {
+                document.getElementById("weather-logo").src = haze
+            } else if (weather == "Clear") {
+                document.getElementById("weather-logo").src = clear
+            } else if (weather == "Clouds") {
+                document.getElementById("weather-logo").src = cloud
+            } else if (weather == "Rain") {
+                document.getElementById("weather-logo").src = rain
+            }
+            document.getElementById("temp").innerText = temp;
+            document.getElementById("city").innerText = city;
+            document.getElementById("type").innerHTML = weather;
+
+
+        }
+    </script>
+
+</body>
+
+</html>
